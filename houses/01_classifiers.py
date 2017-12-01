@@ -1,8 +1,6 @@
 # Script for Kaggel House Prices Competitions
 # Author: Manuel Spierenburg
 
-import sys, os, fnmatch
-import operator
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import cross_val_score
@@ -19,6 +17,7 @@ from sklearn import tree
 from sklearn.externals.six import StringIO
 import scipy.spatial.distance
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # config
 # number of folds in cross validation
@@ -34,8 +33,29 @@ print('1. load data')
 train = pd.read_csv(train_file)
 test = pd.read_csv(test_file)
 
-labels = train.SalePrice
+prices = train.SalePrice
 data = train[train.columns.difference(['SalePrice'])]
+
+#####################
+# visualiziation 
+#####################
+data.columns
+sns.distplot(prices)
+prices.describe()
+print("Skewness: %f" % prices.skew())
+print("Kurtosis: %f" % prices.kurt())
+
+# plot relationsships with numeric features
+numf = data.select_dtypes(include=[np.number]).columns
+for f in numf:
+    d = pd.concat([prices, data[f]], axis=1)  
+    d.plot.scatter(x=f, y='SalePrice')
+
+# plot relationships with categorical features
+catf = data.select_dtypes(include=['object']).columns
+for f in catf:
+    d = pd.concat([prices, data[f]], axis=1)  
+    sns.boxplot(x=f, y='SalePrice', data=d)
 
 #####################
 # model selection
