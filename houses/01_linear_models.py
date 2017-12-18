@@ -85,10 +85,10 @@ models = [
     ['LassoLars',LassoLars()],
     ['LassoLarsCV',LassoLarsCV()]]
 
-# iterate over classifiers
+# iterate over models
 results = {}
 for name, model in models:
-    print('Classifier: ',name)
+    print('Model: ',name)
     scores = cross_val_score(model, X_train, prices, cv=n_folds)
     #print scores
     m = np.mean(scores)
@@ -96,7 +96,7 @@ for name, model in models:
     results[name] = m
 
 #######################
-# ridge cv was best, let's make first submissoin
+# ridge cv was best, let's make first submission
 #######################
 m = RidgeCV()
 m.fit(X_train, prices)

@@ -1,8 +1,6 @@
 # Script for Kaggel Digit Recognizer Competition
 # Author: Manuel Spierenburg
 
-import sys, os, fnmatch
-import operator
 import numpy as np
 from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVC
@@ -14,9 +12,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from sklearn import tree
-from sklearn.externals.six import StringIO
-import scipy.spatial.distance
 import matplotlib.pyplot as plt
 
 # config
@@ -53,7 +48,6 @@ plt.show()
 #####################
 # model selection
 #####################
-print('2. run different classifiers')
 classifiers = [
     ['KNeighborsClassifier',KNeighborsClassifier()],
     ['SVC',SVC()],
@@ -69,18 +63,18 @@ classifiers = [
 results = {}
 for name, classifier in classifiers:
     print('Classifier: ',name)
-    continue
     scores = cross_val_score(classifier, data, labels, cv=n_folds)
     #print scores
     print('mean score: ',np.mean(scores))
-    # KNeighbours is best classifier
-    # try different metrics
-    metrics = ['euclidean','cosine','braycurtis','canberra','cityblock']
-    for metric in metrics:
-        print('Metric: ',metric)
-        clf = KNeighborsClassifier(metric=metric, algorithm='brute')
-        scores = cross_validation.cross_val_score(clf, data, labels, cv=n_folds)
-        print('mean score: ',np.mean(scores))
+    
+# KNeighbours is best classifier
+# try different metrics
+metrics = ['euclidean','cosine','braycurtis','canberra','cityblock']
+for metric in metrics:
+    print('Metric: ',metric)
+    clf = KNeighborsClassifier(metric=metric, algorithm='brute')
+    scores = cross_val_score(clf, data, labels, cv=n_folds)
+    print('mean score: ',np.mean(scores))
 
 # metric: cosine was best
 # try different number of neighbors
@@ -93,7 +87,7 @@ for w in ws:
         print('Weights: ',w)
         print('Number of neighbors: ',k)
         clf = KNeighborsClassifier(metric='cosine', algorithm='brute', n_neighbors=k, weights=w)
-        scores = cross_validation.cross_val_score(clf, data, labels, cv=n_folds)
+        scores = cross_val_score(clf, data, labels, cv=n_folds)
         print('mean score: ',np.mean(scores))
 
 
