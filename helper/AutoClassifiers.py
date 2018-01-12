@@ -31,7 +31,7 @@ def run(X, y, n_folds=10):
     _runGaussianNB(X, y, n_folds)
     _runLinearDiscriminantAnalysis(X, y, n_folds)
     _runQuadraticDiscriminantAnalysis(X, y, n_folds)
-    #_runGradientBoostingClassifier(X, y, n_folds)
+    _runGradientBoostingClassifier(X, y, n_folds)
     _runXGBClassifier(X, y, n_folds)
 
     

@@ -3,15 +3,17 @@
 
 
 # autoreload for ipyhton
-#%load_ext autoreload
-#%autoreload 2
+%load_ext autoreload
+%autoreload 2
 
 import AutoClassifiers
+import AutoLinear
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from sklearn.linear_model import LinearRegression
 from xgboost import XGBClassifier
 
 # config
@@ -29,8 +31,8 @@ test = pd.read_csv(test_file)
 total = pd.concat([train, test])
 
 # use median age for missing ages
-total.Age.fillna(total.Age.median(), inplace=True)
-train = total[:len(train)]
+#total.Age.fillna(total.Age.median(), inplace=True)
+#train = total[:len(train)]
 
 #####################
 # visualiziation 
@@ -54,7 +56,6 @@ plt.figure()
 plt.hist([train[train.Survived == 1].Fare, train[train.Survived == 0].Fare], 
          stacked=True, bins=30, color=['g','r'], label=['Survived','Died'])
 # higher fare >~70 more likely to survive
-
 
 plt.figure()
 sns.boxplot(x='Survived', y='Age', data=train)
@@ -97,16 +98,18 @@ total.Embarked = total.Embarked.map(emb_map).astype(int)
 
 
 # predict age for missing rows with linear regression
-#x = total[~total.Age.isnull()]
-#fts = ['Pclass','Sex','SibSp','Parch','Fare', 'Title']
-#m = RidgeCV()
-#m.fit(x[fts], x.Age)
-#print('lr age score:', m.score(x[fts], x.Age))
-#
-#x2 = total[total.Age.isnull()]
-#y = m.predict(x2)
+x_withAge = total[~total.Age.isnull()]
+fts = ['Pclass','Sex','SibSp','Parch','Fare', 'Title']
+# test different linear models
+AutoLinear.run(x_withAge[fts], x_withAge.Age)
+m = LinearRegression()
+m.fit(x_withAge[fts], x_withAge.Age)
+x_withoutAge = total[total.Age.isnull()]
+y = m.predict(x_withoutAge[fts])
+total[total.Age.isnull()].Age = y
 
-total.Age.fillna(total.Age.mean(), inplace=True)
+# set age for missing with mean
+#total.Age.fillna(total.Age.mean(), inplace=True)
 
 # select features
 fts = ['Pclass','Sex','Age','SibSp','Parch','Fare', 'Title', 'FamilySize', 
