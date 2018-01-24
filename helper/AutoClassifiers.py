@@ -191,7 +191,7 @@ def _runAdaBoostClassifier(X, y, n_folds):
     best_score = 0
     
     # number of boosters
-    for n in [10,20,50,100,200,500,1000,10000]:
+    for n in [10,20,50,100,200,500,1000]:
         model = AdaBoostClassifier(n_estimators=n)
         scores = cross_val_score(model, X, y, cv=n_folds)
         m = np.mean(scores)
@@ -238,16 +238,18 @@ def _runGradientBoostingClassifier(X, y, n_folds):
     best_d = 0
     best_score = 0
     # number of trees
-    for n in [10,20,50,100,200,500,1000,10000]:
+    for n in [10,20,50,100,200,500,1000]:
         # max depth
-        for d in [1,2,3,5,10,20,50,100]:
-            model = GradientBoostingClassifier(n_estimators =n)
+        for d in [3,5,10,20,50,100]:
+            model = GradientBoostingClassifier(n_estimators =n, 
+                                               max_depth=d)
             scores = cross_val_score(model, X, y, cv=n_folds)
             m = np.mean(scores) 
             if m > best_score:
                 best_score = m
                 best_n = n
                 best_d = d
+            print('score:%f #config n:%d d:%d' % (m, n, d))
     print('score:%f #config n:%d d:%d' % (best_score, best_n, best_d))
     return best_score, best_n, best_d
 
@@ -257,7 +259,7 @@ def _runXGBClassifier(X, y, n_folds):
     best_n = 0
     best_score = 0
     # number of trees
-    for n in [10,20,50,100,200,500,1000,10000]:
+    for n in [10,20,50,100,200,500,1000]:
         model = XGBClassifier(n_estimators =n)
         scores = cross_val_score(model, X, y, cv=n_folds)
         m = np.mean(scores) 
