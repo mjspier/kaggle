@@ -1,14 +1,13 @@
 # Script for Kaggel House Prices Competitions
 # Author: Manuel Spierenburg
 
+
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import cross_val_score
-from sklearn.linear_model import (LinearRegression, Ridge, RidgeCV, 
-                                 ElasticNet, BayesianRidge, Lasso,
-                                 LassoCV, LassoLars, LassoLarsCV)
+from sklearn.linear_model import RidgeCV
 import matplotlib.pyplot as plt
 import seaborn as sns
+import AutoLinear
 
 # config
 # number of folds in cross validation
@@ -50,7 +49,7 @@ for f in catf:
     d = pd.concat([prices, data[f]], axis=1)  
     plt.figure()
     sns.boxplot(x=f, y='SalePrice', data=d)
-    
+plt.show()
 
 #####################
 # data cleansing 
@@ -74,26 +73,7 @@ X_test = X_all[len(data):]
 #####################
 # model selection
 #####################
-models = [
-    ['LinearRegression',LinearRegression()],
-    ['Ridge',Ridge()],
-    ['RidgeCV',RidgeCV()],
-    ['ElasticNet',ElasticNet()],
-    ['BayesianRidge',BayesianRidge()],
-    ['Lasso',Lasso()],
-    ['LassoCV',LassoCV()],
-    ['LassoLars',LassoLars()],
-    ['LassoLarsCV',LassoLarsCV()]]
-
-# iterate over models
-results = {}
-for name, model in models:
-    print('Model: ',name)
-    scores = cross_val_score(model, X_train, prices, cv=n_folds)
-    #print scores
-    m = np.mean(scores)
-    print('mean score: ', m)
-    results[name] = m
+AutoLinear.run(X_train, prices, n_folds)
 
 #######################
 # ridge cv was best, let's make first submission

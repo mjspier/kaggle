@@ -2,10 +2,6 @@
 # Author: Manuel Spierenburg
 
 
-# autoreload for ipyhton
-#%load_ext autoreload
-#%autoreload 2
-
 import AutoClassifiers
 import AutoLinear
 import numpy as np
@@ -62,7 +58,7 @@ total.Embarked = total.Embarked.map(emb_map).astype(int)
 x_withAge = total[~total.Age.isnull()]
 fts = ['Pclass','Sex','SibSp','Parch','Fare', 'Title']
 # test different linear models
-AutoLinear.run(x_withAge[fts], x_withAge.Age)
+AutoLinear.run_simple(x_withAge[fts], x_withAge.Age)
 m = LinearRegression()
 m.fit(x_withAge[fts], x_withAge.Age)
 x_withoutAge = total[total.Age.isnull()]
@@ -114,6 +110,7 @@ plt.figure()
 sns.countplot(x="Pclass", hue="Survived",  data=train)
 plt.figure()
 sns.countplot(x="Embarked", hue="Survived",  data=train)
+plt.show()
 
 #####################
 # model selection
